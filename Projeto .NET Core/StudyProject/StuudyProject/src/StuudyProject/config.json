@@ -1,0 +1,8 @@
+﻿{
+  "MailSettings": {
+    "ToAdress": "lucas@lucas.com.br"
+  },
+  "ConnectionStrings": {
+    "WorldContextConnection": "Server=(localdb)\\MSSQLLocalDb;Database=TheWorldDb;Trusted_Connection=true;MultipleActiveResultSets=true;"
+  }
+}
