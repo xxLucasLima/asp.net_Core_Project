@@ -10,6 +10,12 @@ using Microsoft.Extensions.Logging;
 using StuudyProject.Services;
 using Microsoft.Extensions.Configuration;
 using StuudyProject.Models;
+using Newtonsoft.Json.Serialization;
+using AutoMapper;
+using StuudyProject.ViewModels;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace StuudyProject
 {
@@ -43,20 +49,71 @@ namespace StuudyProject
 
             }
 
+            services.AddIdentity<WorldUser, IdentityRole>(config =>
+            {
+                config.User.RequireUniqueEmail = true;
+                config.Password.RequiredLength = 8;
+                config.Cookies.ApplicationCookie.LoginPath = "/Auth/Login";
+                config.Cookies.ApplicationCookie.Events = new CookieAuthenticationEvents()
+                {
+                    OnRedirectToLogin = async ctx =>
+                   {
+                       if (ctx.Request.Path.StartsWithSegments("/api")&&
+                       ctx.Response.StatusCode == 200)
+                       {
+                           ctx.Response.StatusCode = 401;
+
+                       }else
+                       {
+                           ctx.Response.Redirect(ctx.RedirectUri);
+                       }
+                       await Task.Yield();
+                   }
+                };
+            })
+            .AddEntityFrameworkStores<WorldContext>();
+
             services.AddDbContext<WorldContext>();
+            services.AddScoped<IWorldRepository, WorldRepository>();
+            services.AddTransient<GeoCoordsService>();
+            services.AddLogging();
             services.AddTransient<WorldContextSeedData>();
-            services.AddMvc();
+            services.AddMvc(config =>
+            {
+                if (_env.IsProduction())
+                {
+                    config.Filters.Add(new RequireHttpsAttribute());
+                }
+            })
+                .AddJsonOptions(config => 
+                {
+                    config.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, WorldContextSeedData seeder)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory factory, WorldContextSeedData seeder)
         {
+            Mapper.Initialize(config =>
+            {
+                config.CreateMap<TripViewModel, Trip>().ReverseMap();
+                config.CreateMap<StopViewModel, Stop>().ReverseMap();
+
+            });
+
             if (env.IsEnvironment("Development"))
             {
                 app.UseDeveloperExceptionPage();
+                factory.AddDebug(LogLevel.Information);
+            }else
+            {
+                factory.AddDebug(LogLevel.Error);
+
             }
 
             app.UseStaticFiles();
+
+            app.UseIdentity();
 
             app.UseMvc(config =>
             {
@@ -66,7 +123,6 @@ namespace StuudyProject
                     defaults: new { controller = "App", action = "Index" }
                     );
             });
-
             seeder.EnsureData().Wait();
         }
     }

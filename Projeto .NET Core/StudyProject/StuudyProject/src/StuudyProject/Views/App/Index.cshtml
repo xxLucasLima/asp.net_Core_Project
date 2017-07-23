@@ -1,28 +1,24 @@
+@model IEnumerable<StuudyProject.Models.Trip>
 @{ 
     ViewBag.Title = "HomePage";
 
 }
+<script src="~/lib/underscore/underscore-min.js"></script>
+<script src="~/js/angular.min.js"></script>
+<script src="~/js/angular-route.min.js"></script>
+<script src="https://maps.google.com/maps/api/js?key=AIzaSyDmQh2N6pEZbCn5hXpIqQf2w3gSm8OOwhI"></script>
+<script src="~/js/gmaps.min.js"></script>
+<script src="~/js/travelmap.min.js"></script>
+<script src="~/js/simpleControls.js"></script>
+<script src="~/js/app-trip.js"></script>
+<script src="~/js/tripController.js"></script>
+<script src="~/js/tripEditorController.js"></script>
+
 
 <div class="row">
-    <div class="col-md-6 col-xs-8">
-        <h1>The World</h1>
-
-        <form>
-            <div class="form-group">
-                <label>Date: </label>
-                <input type="text" value="" class="form-control"/>
-            </div>
-            <div  class="form-group">
-                <label>Location: </label>
-                <input type="text" value="" class="form-control"/>
-            </div>
-            <div>
-                <input type="submit" value="Add" class="btn btn-success"/>
-            </div>
-        </form>
-    </div>
-    <div class="col-md-6">
-        <h2>lucas</h2>
-
-    </div>
+   <div class="col-md-12">
+       <h1>Welcome to The World</h1>
+       <p>This app will allow you to plan for world Trips</p>
+       <a asp-controller="App" asp-action="Trips" class="btn btn-lg btn-success">View My Trips</a>
+   </div>
 </div>

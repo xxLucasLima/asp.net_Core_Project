@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using StuudyProject.Models;
 using StuudyProject.Services;
 using StuudyProject.ViewModels;
@@ -15,18 +17,34 @@ namespace StuudyProject.Controllers.Web
     {
         private IMailService _mailService;
         private IConfigurationRoot _config;
-        private WorldContext _context;
+        private IWorldRepository _repository;
+        private ILogger<AppController> _logger;
 
-        public AppController(IMailService mailService, IConfigurationRoot config, WorldContext context)
+        public AppController(IMailService mailService, IConfigurationRoot config, IWorldRepository repository, ILogger<AppController> logger )
         {
-            _context = context;
             _mailService = mailService;
             _config = config;
+            _repository = repository;
+            _logger = logger;
         }
         public IActionResult Index()
         {
-            var data = _context.Trips.ToList();
-            return View();
+            return View();         
+        }
+
+        [Authorize]
+        public IActionResult Trips()
+        {
+            try
+            {
+                var data = _repository.GetAllTrips();
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to get Trips in Index page:" + ex.Message);
+                return Redirect("/error");
+            }
         }
 
         public IActionResult Contact()

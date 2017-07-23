@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,21 +9,33 @@ namespace StuudyProject.Models
     public class WorldContextSeedData
     {
         private WorldContext _context;
+        private UserManager<WorldUser> _userManager;
 
-        public WorldContextSeedData(WorldContext context)
+        public WorldContextSeedData(WorldContext context, UserManager<WorldUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task EnsureData()
         {
+            if(await _userManager.FindByEmailAsync("lucas.lima.pinheiro@hotmail.com") == null)
+            {
+                var user = new WorldUser()
+                {
+                    UserName = "LucasLima",
+                    Email = "lucas.lima.pinheiro@hotmail.com"
+                };
+
+                await _userManager.CreateAsync(user, "P@ssw0rd!");
+            }
             if (!_context.Trips.Any())
             {
                 var usTrip = new Trip()
                 {
                     DateCreated = DateTime.UtcNow,
                     Name = "US Trip",
-                    UserName = "",
+                    UserName = "LucasLima",
                     Stops = new List<Stop>()
                     {
                         new Stop() {  Name = "Atlanta, GA", Arrival = new DateTime(2014, 6, 4), Latitude = 33.748995, Longitude = -84.387982, Order = 0 },
@@ -41,7 +54,7 @@ namespace StuudyProject.Models
                 {
                     DateCreated = DateTime.UtcNow,
                     Name = "World Trip",
-                    UserName = "",
+                    UserName = "LucasLima",
                     Stops = new List<Stop>()
                     {
                         new Stop() { Order = 45, Latitude =  28.632244, Longitude =  77.220724, Name = "New Delhi, India", Arrival = DateTime.Parse("Mar 4, 2015") },
