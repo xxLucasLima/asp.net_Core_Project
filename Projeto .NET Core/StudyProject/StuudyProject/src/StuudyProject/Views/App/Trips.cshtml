@@ -6,13 +6,24 @@
     <script src="~/lib/underscore/underscore-min.js"></script>
     <script src="~/js/angular.min.js"></script>
     <script src="~/js/angular-route.min.js"></script>
-    <script src="https://maps.google.com/maps/api/js?key=AIzaSyDmQh2N6pEZbCn5hXpIqQf2w3gSm8OOwhI"></script>
+    <script src="https://maps.google.com/maps/api/js?key=AIzaSyBD9yme_78XEdR3X0CcHIjiCqD44w_r7qs"></script>
     <script src="~/js/gmaps.min.js"></script>
     <script src="~/js/travelmap.min.js"></script>
-    <script src="~/js/simpleControls.js"></script>
-    <script src="~/js/app-trip.js"></script>
-    <script src="~/js/tripController.js"></script>
-    <script src="~/js/tripEditorController.js"></script>   
+
+    <environment names="Development">
+        <script src="~/js/simpleControls.js"></script>
+        <script src="~/js/app-trip.js"></script>
+        <script src="~/js/tripController.js"></script>
+        <script src="~/js/tripEditorController.js"></script> 
+    </environment>
+
+    <environment names="Production, Staging">
+        <script src="~/lib/_app/simpleControls.js"></script>
+        <script src="~/lib/_app/app-trip.js"></script>
+        <script src="~/lib/_app/tripController.js"></script>
+        <script src="~/lib/_app/tripEditorController.js"></script>
+    </environment>
+  
 }
 
 <div ng-app="app-trips">

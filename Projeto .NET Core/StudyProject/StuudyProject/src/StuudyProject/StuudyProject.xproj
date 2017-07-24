@@ -75,4 +75,9 @@
   <!-- ****************************************** -->
   <!-- End App.config Custom Transform Settings   -->
   <!-- **End CsProjUtil.tanaka_733.28c450ee-efef-4e74-882a-dd3d6a0b438f ** -->
+  <Target Name="CustomBuild" BeforeTargets="Publish">
+    <Exec Command="npm install"></Exec>
+    <!--<Exec Command="bower install"></Exec>-->
+    <Exec Command="node node_modules\\gulp\\bin\\gulp.js minify"></Exec>
+  </Target>
 </Project>

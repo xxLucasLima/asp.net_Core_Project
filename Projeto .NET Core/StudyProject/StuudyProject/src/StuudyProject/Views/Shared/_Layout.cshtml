@@ -66,8 +66,13 @@
 
     <script type="text/javascript" src="~/lib/jquery/dist/jquery.js"></script>
     @RenderSection("scripts", false)
-    <script src="~/js/style.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <environment names="Development">
+        <script src="~/js/style.js"></script>
+    </environment>
+    <environment names="Production,Staging">
+        <script src="~/lib/_app/style.js"></script>
+    </environment>
+    
 
 
 </body>
